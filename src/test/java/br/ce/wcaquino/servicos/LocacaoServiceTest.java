@@ -1,9 +1,15 @@
 package br.ce.wcaquino.servicos;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.hamcrest.CoreMatchers;
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
@@ -18,11 +24,51 @@ import exceptions.LocadoraException;
 
 public class LocacaoServiceTest {
 	
+	/**
+	 * Atributos globais que devem ser utilizados em vários testes
+	 * Dessa forma utilizamos @Before para instanciar/inicializar
+	 */
+	private LocacaoService service;
+	
+	// declarar static passa para escopo da classe e não reinicializa a cada teste
+	private static int countTest = 0; 
+	
 	@Rule
 	public ErrorCollector error = new ErrorCollector();
 	
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
+	
+	@Before
+	public void setup() {
+		// sempre reinicializa as variaveis da classe para cada teste
+		service = new LocacaoService();
+		countTest++;
+		System.out.println("Teste: " + countTest);
+	}
+	
+	@After
+	public void tearDown() {
+		//System.out.println("After");
+	}
+	
+	/**
+	 * Deve ser estático pois somente assim o JUnit vai ter acesso
+	 * antes da classe ser criada (executa antes de tudo)
+	 */
+	@BeforeClass
+	public static void setupClass() {
+		//System.out.println("Before class");
+	}
+	
+	/**
+	 * Deve ser estático pois somente assim o JUnit vai ter acesso
+	 * depois da classe ser criada (executa no final de tudo)
+	 */
+	@AfterClass
+	public static void tearDownClass() {
+		//System.out.println("After class");
+	}
 	
 	/**
 	 * Se mesmo cenario e ação usar mesmo teste no mesmo método mesmo com varias assertivas 
@@ -33,12 +79,11 @@ public class LocacaoServiceTest {
 		// falha x erro: falha resultado inesperado, erro excessão por isso sempre lançar excessão pra camada superior que o JUnit trata
 		
 		//cenario
-		LocacaoService service = new LocacaoService();
 		Usuario usuario = new Usuario("Usuario 1");
-		Filme filme = new Filme("Filme 1", 2, 5.0);
+		List<Filme> filmes = Arrays.asList(new Filme("Filme 1", 2, 5.0));
 		
 		//acao
-		Locacao locacao = service.alugarFilme(usuario, filme);
+		Locacao locacao = service.alugarFilme(usuario, filmes);
 			
 		//verificacao
 		// (valor esperado, valor obtido, precisao)
@@ -63,12 +108,11 @@ public class LocacaoServiceTest {
 	@Test(expected = FilmeSemEstoqueException.class)
 	public void testeLocacaoFilmeSemEstoque() throws LocadoraException, FilmeSemEstoqueException {
 		//cenario
-		LocacaoService service = new LocacaoService();
 		Usuario usuario = new Usuario("Usuario 1");
-		Filme filme = new Filme("Filme 1", 0, 5.0);
+		List<Filme> filmes = Arrays.asList(new Filme("Filme 1", 0, 5.0));
 		
 		//acao
-		service.alugarFilme(usuario, filme);
+		service.alugarFilme(usuario, filmes);
 			
 		// validacao
 		// está no expected
@@ -81,19 +125,20 @@ public class LocacaoServiceTest {
 	@Test
 	public void testeLocacaoFilmeSemEstoque2() {
 		//cenario
-		LocacaoService service = new LocacaoService();
 		Usuario usuario = new Usuario("Usuario 1");
-		Filme filme = new Filme("Filme 1", 0, 5.0);
+		List<Filme> filmes = Arrays.asList(new Filme("Filme 1", 0, 5.0));
 		
 		try {
 			//acao
-			service.alugarFilme(usuario, filme);
+			service.alugarFilme(usuario, filmes);
 		
 			// para não gerar falso positivo, nesse caso chegou aqui não gerou exceção mais devria ter gerado (teste falhou)
-			Assert.fail("Deveria ter lançado excessão!!!");
-		} catch (Exception e) {
+			Assert.fail("Deveria ter lançado excessão FilmeSemEstoqueException!!!");
+		} catch (FilmeSemEstoqueException e) {
 			// validando o erro
-			Assert.assertThat(e.getMessage(), CoreMatchers.is("Filme sem estoque"));
+			Assert.assertTrue(true);
+		} catch (Exception e) {
+			Assert.fail("Deveria ter lançado excessão FilmeSemEstoqueException!!!");
 		}
 	}
 	
@@ -105,9 +150,8 @@ public class LocacaoServiceTest {
 	@Test
 	public void testeLocacaoFilmeSemEstoque3() throws Exception {
 		//cenario
-		LocacaoService service = new LocacaoService();
 		Usuario usuario = new Usuario("Usuario 1");
-		Filme filme = new Filme("Filme 1", 0, 5.0);
+		List<Filme> filmes = Arrays.asList(new Filme("Filme 1", 0, 5.0));
 		
 		// validacao faz parte do cenário, nesse caso passar sempre antes da ação
 		// exceção esperada
@@ -116,7 +160,7 @@ public class LocacaoServiceTest {
 		//exception.expectMessage("Filme sem estoque");
 		
 		//acao
-		service.alugarFilme(usuario, filme);
+		service.alugarFilme(usuario, filmes);
 	}
 	
 	/**
@@ -127,7 +171,6 @@ public class LocacaoServiceTest {
 	@Test
 	public void testeLocacaoFilmeVazio() throws FilmeSemEstoqueException, LocadoraException {
 		//cenario
-		LocacaoService service = new LocacaoService();
 		Usuario usuario = new Usuario("Usuario 1");
 		
 		// expectativa
@@ -145,12 +188,11 @@ public class LocacaoServiceTest {
 	@Test
 	public void testeLocacaoUsuarioVazio() throws FilmeSemEstoqueException {
 		//cenario
-		LocacaoService service = new LocacaoService();
-		Filme filme = new Filme("Filme 1", 2, 5.0);
+		List<Filme> filmes = Arrays.asList(new Filme("Filme 1", 2, 5.0));
 		
 		try {
 			//acao
-			service.alugarFilme(null, filme);
+			service.alugarFilme(null, filmes);
 			Assert.fail();
 		} catch (LocadoraException e) {
 			Assert.assertThat(e.getMessage(), CoreMatchers.is("Usuario vazio"));
