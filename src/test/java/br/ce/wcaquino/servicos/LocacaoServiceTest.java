@@ -20,7 +20,6 @@ import org.junit.rules.ExpectedException;
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
 import br.ce.wcaquino.entidades.Usuario;
-import br.ce.wcaquino.matchers.DiaSemanaMatcher;
 import br.ce.wcaquino.matchers.MatchersProprios;
 import br.ce.wcaquino.utils.DataUtils;
 import exceptions.FilmeSemEstoqueException;
@@ -95,9 +94,13 @@ public class LocacaoServiceTest {
 		//verificacao
 		// (valor esperado, valor obtido, precisao)
 		Assert.assertEquals(5.0, locacao.getValor(), 0.01);
+		
+		// exemplos default e com matcher proprio
 		Assert.assertTrue(DataUtils.isMesmaData(locacao.getDataLocacao(), new Date()));
+		error.checkThat(locacao.getDataLocacao(), MatchersProprios.ehHoje());
 		Assert.assertTrue(DataUtils.isMesmaData(locacao.getDataRetorno(), DataUtils.obterDataComDiferencaDias(1)));
-	
+		error.checkThat(locacao.getDataRetorno(), MatchersProprios.ehHojeComDiferencaoDias(1));
+		
 		// verifique que: valor da alocação seja 5.0
 		Assert.assertThat(locacao.getValor(), CoreMatchers.is(CoreMatchers.equalTo(5.0)));
 	
@@ -209,7 +212,7 @@ public class LocacaoServiceTest {
 	@Test
 	public void deveDevolverFilmeNaSegundaAoAlugarNoSabado() throws LocadoraException, FilmeSemEstoqueException {
 		// esse teste deve validar apenas no sábado utilizamos assumption
-		//Assume.assumeTrue(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
+		Assume.assumeTrue(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
 		
 		// cenario
 		Usuario usuario = new Usuario("Usuario 1");
