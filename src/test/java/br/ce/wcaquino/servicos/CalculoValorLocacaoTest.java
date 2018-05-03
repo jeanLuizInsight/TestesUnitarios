@@ -17,6 +17,8 @@ import org.junit.runners.Parameterized.Parameters;
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
 import br.ce.wcaquino.entidades.Usuario;
+import builders.FilmeBuilder;
+import builders.UsuarioBuilder;
 import exceptions.FilmeSemEstoqueException;
 import exceptions.LocadoraException;
 
@@ -48,12 +50,12 @@ public class CalculoValorLocacaoTest {
 		service = new LocacaoService();
 	}
 	
-	private static Filme fime1 = new Filme("Filme 1", 2, 4.0); 
-	private static Filme fime2 = new Filme("Filme 2", 2, 4.0);
-	private static Filme fime3 = new Filme("Filme 3", 2, 4.0);
-	private static Filme fime4 = new Filme("Filme 4", 2, 4.0);
-	private static Filme fime5 = new Filme("Filme 5", 2, 4.0);
-	private static Filme fime6 = new Filme("Filme 6", 2, 4.0);
+	private static Filme fime1 = FilmeBuilder.umFilme().comValor(4.0).agora(); 
+	private static Filme fime2 = FilmeBuilder.umFilme().comValor(4.0).agora();
+	private static Filme fime3 = FilmeBuilder.umFilme().comValor(4.0).agora();
+	private static Filme fime4 = FilmeBuilder.umFilme().comValor(4.0).agora();
+	private static Filme fime5 = FilmeBuilder.umFilme().comValor(4.0).agora();
+	private static Filme fime6 = FilmeBuilder.umFilme().comValor(4.0).agora();
 	
 	/**
 	 * @Parameters
@@ -80,7 +82,7 @@ public class CalculoValorLocacaoTest {
 	@Test
 	public void deveCalcularValorDaLocacaoComsiderandoDescontos() throws LocadoraException, FilmeSemEstoqueException {
 		// cenario
-		Usuario usuario = new Usuario("Usuario 1");
+		Usuario usuario = UsuarioBuilder.umUsuario().agora();
 	
 		// acao
 		Locacao resultado = service.alugarFilme(usuario, filmes);
