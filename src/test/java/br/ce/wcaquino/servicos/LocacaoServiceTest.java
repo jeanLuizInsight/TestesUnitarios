@@ -1,6 +1,9 @@
 package br.ce.wcaquino.servicos;
 
+import static org.hamcrest.CoreMatchers.is;
+
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +11,7 @@ import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -75,9 +79,12 @@ public class LocacaoServiceTest {
 	 * @throws Exception 
 	 */
 	@Test
-	public void testeLocacao() throws Exception {
+	public void deveAlugarFilme() throws Exception {
 		// falha x erro: falha resultado inesperado, erro excessão por isso sempre lançar excessão pra camada superior que o JUnit trata
 		
+		// esse teste deve validar apenas fora no sábado utilizamos assumption
+		Assume.assumeFalse(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
+				
 		//cenario
 		Usuario usuario = new Usuario("Usuario 1");
 		List<Filme> filmes = Arrays.asList(new Filme("Filme 1", 2, 5.0));
@@ -106,7 +113,7 @@ public class LocacaoServiceTest {
 	 * @throws Exception
 	 */
 	@Test(expected = FilmeSemEstoqueException.class)
-	public void testeLocacaoFilmeSemEstoque() throws LocadoraException, FilmeSemEstoqueException {
+	public void deveLancarExcecaoAoAlugarFilmeSemEstoque() throws LocadoraException, FilmeSemEstoqueException {
 		//cenario
 		Usuario usuario = new Usuario("Usuario 1");
 		List<Filme> filmes = Arrays.asList(new Filme("Filme 1", 0, 5.0));
@@ -123,7 +130,7 @@ public class LocacaoServiceTest {
 	 * Nesse caso vai ocorrer a exceção e queremos validar a mensagem error
 	 */
 	@Test
-	public void testeLocacaoFilmeSemEstoque2() {
+	public void deveLancarExcecaoAoAlugarFilmeSemEstoque2() {
 		//cenario
 		Usuario usuario = new Usuario("Usuario 1");
 		List<Filme> filmes = Arrays.asList(new Filme("Filme 1", 0, 5.0));
@@ -148,7 +155,7 @@ public class LocacaoServiceTest {
 	 * @throws Exception 
 	 */
 	@Test
-	public void testeLocacaoFilmeSemEstoque3() throws Exception {
+	public void deveLancarExcecaoAoAlugarFilmeSemEstoque3() throws Exception {
 		//cenario
 		Usuario usuario = new Usuario("Usuario 1");
 		List<Filme> filmes = Arrays.asList(new Filme("Filme 1", 0, 5.0));
@@ -169,7 +176,7 @@ public class LocacaoServiceTest {
 	 * @throws LocadoraException 
 	 */
 	@Test
-	public void testeLocacaoFilmeVazio() throws FilmeSemEstoqueException, LocadoraException {
+	public void naoDeveAlugarFilmeSemFIlme() throws FilmeSemEstoqueException, LocadoraException {
 		//cenario
 		Usuario usuario = new Usuario("Usuario 1");
 		
@@ -186,7 +193,7 @@ public class LocacaoServiceTest {
 	 * @throws FilmeSemEstoqueException
 	 */
 	@Test
-	public void testeLocacaoUsuarioVazio() throws FilmeSemEstoqueException {
+	public void naoDeveAlugarFilmeSemUsuario() throws FilmeSemEstoqueException {
 		//cenario
 		List<Filme> filmes = Arrays.asList(new Filme("Filme 1", 2, 5.0));
 		
@@ -197,5 +204,22 @@ public class LocacaoServiceTest {
 		} catch (LocadoraException e) {
 			Assert.assertThat(e.getMessage(), CoreMatchers.is("Usuario vazio"));
 		} 
+	}
+	
+	@Test
+	public void deveDevolverFilmeNaSegundaAoAlugarNoSabado() throws LocadoraException, FilmeSemEstoqueException {
+		// esse teste deve validar apenas no sábado utilizamos assumption
+		Assume.assumeTrue(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
+		
+		// cenario
+		Usuario usuario = new Usuario("Usuario 1");
+		List<Filme> filmes = Arrays.asList(new Filme("Filme 1", 2, 10.0));
+	
+		// acao
+		Locacao retorno = service.alugarFilme(usuario, filmes);
+		
+		// validacao
+		boolean ehSegunda = DataUtils.verificarDiaSemana(retorno.getDataRetorno(), Calendar.MONDAY);
+		Assert.assertTrue(ehSegunda);
 	}
 }
