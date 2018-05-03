@@ -1,7 +1,5 @@
 package br.ce.wcaquino.servicos;
 
-import static org.hamcrest.CoreMatchers.is;
-
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,6 +20,8 @@ import org.junit.rules.ExpectedException;
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
 import br.ce.wcaquino.entidades.Usuario;
+import br.ce.wcaquino.matchers.DiaSemanaMatcher;
+import br.ce.wcaquino.matchers.MatchersProprios;
 import br.ce.wcaquino.utils.DataUtils;
 import exceptions.FilmeSemEstoqueException;
 import exceptions.LocadoraException;
@@ -209,7 +209,7 @@ public class LocacaoServiceTest {
 	@Test
 	public void deveDevolverFilmeNaSegundaAoAlugarNoSabado() throws LocadoraException, FilmeSemEstoqueException {
 		// esse teste deve validar apenas no sábado utilizamos assumption
-		Assume.assumeTrue(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
+		//Assume.assumeTrue(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
 		
 		// cenario
 		Usuario usuario = new Usuario("Usuario 1");
@@ -219,7 +219,11 @@ public class LocacaoServiceTest {
 		Locacao retorno = service.alugarFilme(usuario, filmes);
 		
 		// validacao
-		boolean ehSegunda = DataUtils.verificarDiaSemana(retorno.getDataRetorno(), Calendar.MONDAY);
-		Assert.assertTrue(ehSegunda);
+		//boolean ehSegunda = DataUtils.verificarDiaSemana(retorno.getDataRetorno(), Calendar.MONDAY);
+		//Assert.assertTrue(ehSegunda);
+		
+		// criando proprios matchers
+		Assert.assertThat(retorno.getDataRetorno(), MatchersProprios.caiEm(Calendar.MONDAY));
+	
 	}
 }
