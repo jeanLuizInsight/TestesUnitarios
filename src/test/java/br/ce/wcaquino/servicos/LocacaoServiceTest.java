@@ -16,14 +16,18 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
+import org.mockito.Mockito;
 
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
 import br.ce.wcaquino.entidades.Usuario;
 import br.ce.wcaquino.matchers.MatchersProprios;
 import br.ce.wcaquino.utils.DataUtils;
+import buildermaster.BuilderMaster;
 import builders.FilmeBuilder;
 import builders.UsuarioBuilder;
+import daos.LocacaoDAO;
+import daos.LocacaoDAOFake;
 import exceptions.FilmeSemEstoqueException;
 import exceptions.LocadoraException;
 
@@ -48,6 +52,8 @@ public class LocacaoServiceTest {
 	public void setup() {
 		// sempre reinicializa as variaveis da classe para cada teste
 		service = new LocacaoService();
+		LocacaoDAO locacaoDao = Mockito.mock(LocacaoDAO.class);
+		service.setLocacaoDAO(locacaoDao);
 		countTest++;
 		System.out.println("Teste: " + countTest);
 	}
@@ -231,4 +237,10 @@ public class LocacaoServiceTest {
 		Assert.assertThat(retorno.getDataRetorno(), MatchersProprios.caiEm(Calendar.MONDAY));
 	
 	}
+	
+	public static void main(String[] args) {
+		new BuilderMaster().gerarCodigoClasse(Locacao.class);
+	}
+	
+	
 }

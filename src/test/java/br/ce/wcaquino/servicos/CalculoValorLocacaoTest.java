@@ -13,12 +13,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
+import org.mockito.Mockito;
 
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
 import br.ce.wcaquino.entidades.Usuario;
 import builders.FilmeBuilder;
 import builders.UsuarioBuilder;
+import daos.LocacaoDAO;
+import daos.LocacaoDAOFake;
 import exceptions.FilmeSemEstoqueException;
 import exceptions.LocadoraException;
 
@@ -48,6 +51,8 @@ public class CalculoValorLocacaoTest {
 	@Before
 	public void setup() {
 		service = new LocacaoService();
+		LocacaoDAO locacaoDao = Mockito.mock(LocacaoDAO.class);
+		service.setLocacaoDAO(locacaoDao);
 	}
 	
 	private static Filme fime1 = FilmeBuilder.umFilme().comValor(4.0).agora(); 
