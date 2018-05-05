@@ -21,7 +21,6 @@ import br.ce.wcaquino.entidades.Usuario;
 import builders.FilmeBuilder;
 import builders.UsuarioBuilder;
 import daos.LocacaoDAO;
-import daos.LocacaoDAOFake;
 import exceptions.FilmeSemEstoqueException;
 import exceptions.LocadoraException;
 
@@ -37,6 +36,8 @@ import exceptions.LocadoraException;
 public class CalculoValorLocacaoTest {
 	
 	private LocacaoService service;
+	private LocacaoDAO locacaoDao;
+	private SpcService spcService;
 	
 	/**
 	 * Link das variaveis utilizadas nos testes com a coleção criada abaixo
@@ -51,8 +52,12 @@ public class CalculoValorLocacaoTest {
 	@Before
 	public void setup() {
 		service = new LocacaoService();
-		LocacaoDAO locacaoDao = Mockito.mock(LocacaoDAO.class);
+		
+		locacaoDao = Mockito.mock(LocacaoDAO.class);
 		service.setLocacaoDAO(locacaoDao);
+		
+		spcService = Mockito.mock(SpcService.class);
+		service.setSpcService(spcService);
 	}
 	
 	private static Filme fime1 = FilmeBuilder.umFilme().comValor(4.0).agora(); 

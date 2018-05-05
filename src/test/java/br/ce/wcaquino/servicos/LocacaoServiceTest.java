@@ -1,11 +1,14 @@
 package br.ce.wcaquino.servicos;
 
+import static org.hamcrest.CoreMatchers.is;
+
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -25,9 +28,9 @@ import br.ce.wcaquino.matchers.MatchersProprios;
 import br.ce.wcaquino.utils.DataUtils;
 import buildermaster.BuilderMaster;
 import builders.FilmeBuilder;
+import builders.LocacaoBuilder;
 import builders.UsuarioBuilder;
 import daos.LocacaoDAO;
-import daos.LocacaoDAOFake;
 import exceptions.FilmeSemEstoqueException;
 import exceptions.LocadoraException;
 
@@ -38,7 +41,10 @@ public class LocacaoServiceTest {
 	 * Dessa forma utilizamos @Before para instanciar/inicializar
 	 */
 	private LocacaoService service;
-	
+	private LocacaoDAO locacaoDao;
+	private SpcService spcService;
+	private EmailService emailService;
+
 	// declarar static passa para escopo da classe e não reinicializa a cada teste
 	private static int countTest = 0; 
 	
@@ -52,8 +58,14 @@ public class LocacaoServiceTest {
 	public void setup() {
 		// sempre reinicializa as variaveis da classe para cada teste
 		service = new LocacaoService();
-		LocacaoDAO locacaoDao = Mockito.mock(LocacaoDAO.class);
+		
+		// injeção das dependencias para service
+		locacaoDao = Mockito.mock(LocacaoDAO.class);
 		service.setLocacaoDAO(locacaoDao);
+		spcService = Mockito.mock(SpcService.class);
+		service.setSpcService(spcService);
+		emailService = Mockito.mock(EmailService.class);
+		service.setEmailService(emailService);
 		countTest++;
 		System.out.println("Teste: " + countTest);
 	}
@@ -242,5 +254,47 @@ public class LocacaoServiceTest {
 		new BuilderMaster().gerarCodigoClasse(Locacao.class);
 	}
 	
+	@Test
+	public void naoDeveAlugarFilmeParaNegativadoSpc() throws FilmeSemEstoqueException {
+		// cenario
+		Usuario usuario = UsuarioBuilder.umUsuario().agora();
+		List<Filme> filmes = Arrays.asList(FilmeBuilder.umFilme().agora());
+		
+		// mock no cenario para simular que o usuario eh negativado
+		Mockito.when(spcService.possuiNegativacao(usuario)).thenReturn(true);
+		
+		// acao
+		try {
+			service.alugarFilme(usuario, filmes);
+			// validacao (não pode chegar aqui pois deve lançar exception)
+			Assert.fail();
+		} catch (LocadoraException e) {
+			Assert.assertThat(e.getMessage(), CoreMatchers.is("Usuario negativado!"));	
+		} 
+		
+		// vai verificar se o metodo possuiNegativacao foi chamado
+		Mockito.verify(spcService).possuiNegativacao(usuario);
+	}
+	
+	@Test
+	public void deveEnviarEmailParaLocacoesAtrasadas() {
+		// cenario
+		Usuario usuario = UsuarioBuilder.umUsuario().agora();
+		List<Locacao> locacoes = Arrays.asList(
+				LocacaoBuilder
+				.umLocacao()
+				.comUsuario(usuario)
+				.comDataRetorno(DataUtils.obterDataComDiferencaDias(-2))
+				.agora());
+		// gravando a expectativa
+		Mockito.when(locacaoDao.obterLocacoesPendentes()).thenReturn(locacoes);
+		
+		// acao
+		service.notificarAtrasos();
+		
+		// validacao
+		// verificacao passa o mock criado e o metodo utilizado nele para saber se o mesmo foi chamado
+		Mockito.verify(emailService).notificarAtrasos(usuario);
+	}
 	
 }
