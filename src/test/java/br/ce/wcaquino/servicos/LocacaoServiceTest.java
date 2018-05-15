@@ -1,14 +1,11 @@
 package br.ce.wcaquino.servicos;
 
-import static org.hamcrest.CoreMatchers.is;
-
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import org.hamcrest.CoreMatchers;
-import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -261,7 +258,7 @@ public class LocacaoServiceTest {
 		List<Filme> filmes = Arrays.asList(FilmeBuilder.umFilme().agora());
 		
 		// mock no cenario para simular que o usuario eh negativado
-		Mockito.when(spcService.possuiNegativacao(usuario)).thenReturn(true);
+		Mockito.when(spcService.possuiNegativacao(Mockito.any(Usuario.class))).thenReturn(true);
 		
 		// acao
 		try {
@@ -280,12 +277,13 @@ public class LocacaoServiceTest {
 	public void deveEnviarEmailParaLocacoesAtrasadas() {
 		// cenario
 		Usuario usuario = UsuarioBuilder.umUsuario().agora();
+		Usuario usuario2 = UsuarioBuilder.umUsuario().comNome("Usuario 2").agora();
+		Usuario usuario3 = UsuarioBuilder.umUsuario().comNome("Usuario 3").agora();
+		
 		List<Locacao> locacoes = Arrays.asList(
-				LocacaoBuilder
-				.umLocacao()
-				.comUsuario(usuario)
-				.comDataRetorno(DataUtils.obterDataComDiferencaDias(-2))
-				.agora());
+				LocacaoBuilder.umLocacao().atrasado().comUsuario(usuario).agora(),
+				LocacaoBuilder.umLocacao().comUsuario(usuario2).agora(),
+				LocacaoBuilder.umLocacao().atrasado().comUsuario(usuario3).agora());
 		// gravando a expectativa
 		Mockito.when(locacaoDao.obterLocacoesPendentes()).thenReturn(locacoes);
 		
@@ -295,6 +293,9 @@ public class LocacaoServiceTest {
 		// validacao
 		// verificacao passa o mock criado e o metodo utilizado nele para saber se o mesmo foi chamado
 		Mockito.verify(emailService).notificarAtrasos(usuario);
+		// pro usuario 2 nunca deve ocorrer pois não está atrasado
+		Mockito.verify(emailService, Mockito.never()).notificarAtrasos(usuario2);
+		Mockito.verify(emailService).notificarAtrasos(usuario3);
 	}
 	
 }
