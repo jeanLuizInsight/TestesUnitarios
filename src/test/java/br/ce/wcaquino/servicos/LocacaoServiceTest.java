@@ -1,5 +1,6 @@
 package br.ce.wcaquino.servicos;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -24,6 +25,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -320,6 +322,32 @@ public class LocacaoServiceTest {
 		service.alugarFilme(usuario, filmes);
 		
 		// verificacao
+	}
+	
+	@Test
+	public void deveProrrogarUmaLocacao() {
+		// cenario
+		Locacao loc = LocacaoBuilder.umLocacao().agora();
+		
+		// acao
+		// esse método salva nova locação sem retorna-la. pra conseguir testar utilizamos argumentor captor
+		service.prorrograLocacao(loc, 3);
+		
+		// validacao
+		// dessa forma conseguimos capturar o Locacao salvo dentro do metodo pelo DAO
+		ArgumentCaptor<Locacao> argCap = ArgumentCaptor.forClass(Locacao.class);
+		verify(locacaoDao).salvar(argCap.capture());
+		Locacao locacaoRetornada = argCap.getValue();
+		
+		// o valor esperado eh 30 pois o valor da loc eh 10 multiplicado por 3 dias de prorrogacao
+//		assertThat(locacaoRetornada.getValor(), is(30.0));
+//		assertThat(locacaoRetornada.getDataLocacao(), MatchersProprios.ehHoje());
+//		assertThat(locacaoRetornada.getDataRetorno(), MatchersProprios.ehHojeComDiferencaoDias(3));
+	
+		// vou usar o erro no lugar do assertThat pois quero capurar todos os problema em uma vez
+		error.checkThat(locacaoRetornada.getValor(), is(30.0));
+		error.checkThat(locacaoRetornada.getDataLocacao(), MatchersProprios.ehHoje());
+		error.checkThat(locacaoRetornada.getDataRetorno(), MatchersProprios.ehHojeComDiferencaoDias(3));
 	}
 	
 }

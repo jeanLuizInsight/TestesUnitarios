@@ -109,16 +109,14 @@ public class LocacaoService {
 			}
 		}
 	}
-
-	public void setLocacaoDAO(LocacaoDAO dao) {
-		this.locacaoDao = dao;
-	}
 	
-	public void setSpcService(SpcService spcService) {
-		this.spcService = spcService;
-	}
-	
-	public void setEmailService(EmailService emailService) {
-		this.emailService = emailService;
+	public void prorrograLocacao(Locacao locacao, int dias) {
+		Locacao loc = new Locacao();
+		loc.setUsuario(locacao.getUsuario());
+		loc.setFilmes(locacao.getFilmes());
+		loc.setDataLocacao(new Date());
+		loc.setDataRetorno(DataUtils.obterDataComDiferencaDias(dias));
+		loc.setValor(locacao.getValor() * dias);
+		locacaoDao.salvar(loc);
 	}
 }
