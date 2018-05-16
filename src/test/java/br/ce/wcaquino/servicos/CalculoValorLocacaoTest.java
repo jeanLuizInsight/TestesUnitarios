@@ -13,7 +13,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
-import org.mockito.Mockito;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
@@ -34,9 +36,13 @@ import exceptions.LocadoraException;
  */
 @RunWith(Parameterized.class)
 public class CalculoValorLocacaoTest {
-	
+	// classe de testes que os mocks devem ser injetados
+	@InjectMocks
 	private LocacaoService service;
+	
+	@Mock
 	private LocacaoDAO locacaoDao;
+	@Mock
 	private SpcService spcService;
 	
 	/**
@@ -51,13 +57,7 @@ public class CalculoValorLocacaoTest {
 	
 	@Before
 	public void setup() {
-		service = new LocacaoService();
-		
-		locacaoDao = Mockito.mock(LocacaoDAO.class);
-		service.setLocacaoDAO(locacaoDao);
-		
-		spcService = Mockito.mock(SpcService.class);
-		service.setSpcService(spcService);
+		MockitoAnnotations.initMocks(this);
 	}
 	
 	private static Filme fime1 = FilmeBuilder.umFilme().comValor(4.0).agora(); 

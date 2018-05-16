@@ -1,5 +1,13 @@
 package br.ce.wcaquino.servicos;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -16,7 +24,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
@@ -37,14 +48,16 @@ public class LocacaoServiceTest {
 	 * Atributos globais que devem ser utilizados em vários testes
 	 * Dessa forma utilizamos @Before para instanciar/inicializar
 	 */
+	@InjectMocks
 	private LocacaoService service;
+	
+	@Mock
 	private LocacaoDAO locacaoDao;
+	@Mock
 	private SpcService spcService;
+	@Mock
 	private EmailService emailService;
 
-	// declarar static passa para escopo da classe e não reinicializa a cada teste
-	private static int countTest = 0; 
-	
 	@Rule
 	public ErrorCollector error = new ErrorCollector();
 	
@@ -53,18 +66,7 @@ public class LocacaoServiceTest {
 	
 	@Before
 	public void setup() {
-		// sempre reinicializa as variaveis da classe para cada teste
-		service = new LocacaoService();
-		
-		// injeção das dependencias para service
-		locacaoDao = Mockito.mock(LocacaoDAO.class);
-		service.setLocacaoDAO(locacaoDao);
-		spcService = Mockito.mock(SpcService.class);
-		service.setSpcService(spcService);
-		emailService = Mockito.mock(EmailService.class);
-		service.setEmailService(emailService);
-		countTest++;
-		System.out.println("Teste: " + countTest);
+		MockitoAnnotations.initMocks(this);
 	}
 	
 	@After
@@ -110,16 +112,16 @@ public class LocacaoServiceTest {
 			
 		//verificacao
 		// (valor esperado, valor obtido, precisao)
-		Assert.assertEquals(10.0, locacao.getValor(), 0.01);
+		assertEquals(10.0, locacao.getValor(), 0.01);
 		
 		// exemplos default e com matcher proprio
-		Assert.assertTrue(DataUtils.isMesmaData(locacao.getDataLocacao(), new Date()));
+		assertTrue(DataUtils.isMesmaData(locacao.getDataLocacao(), new Date()));
 		error.checkThat(locacao.getDataLocacao(), MatchersProprios.ehHoje());
-		Assert.assertTrue(DataUtils.isMesmaData(locacao.getDataRetorno(), DataUtils.obterDataComDiferencaDias(1)));
+		assertTrue(DataUtils.isMesmaData(locacao.getDataRetorno(), DataUtils.obterDataComDiferencaDias(1)));
 		error.checkThat(locacao.getDataRetorno(), MatchersProprios.ehHojeComDiferencaoDias(1));
 		
 		// verifique que: valor da alocação seja 5.0
-		Assert.assertThat(locacao.getValor(), CoreMatchers.is(CoreMatchers.equalTo(10.0)));
+		assertThat(locacao.getValor(), CoreMatchers.is(CoreMatchers.equalTo(10.0)));
 	
 		// com error Rule conseguimos mapear todos os erros, caso contrario se existir erro em mais de um Assert vamos ver apenas o primeiro, ou seja, um a um
 		error.checkThat(locacao.getValor(), CoreMatchers.is(CoreMatchers.equalTo(10.0)));
@@ -160,12 +162,12 @@ public class LocacaoServiceTest {
 			service.alugarFilme(usuario, filmes);
 		
 			// para não gerar falso positivo, nesse caso chegou aqui não gerou exceção mais devria ter gerado (teste falhou)
-			Assert.fail("Deveria ter lançado excessão FilmeSemEstoqueException!!!");
+			fail("Deveria ter lançado excessão FilmeSemEstoqueException!!!");
 		} catch (FilmeSemEstoqueException e) {
 			// validando o erro
-			Assert.assertTrue(true);
+			assertTrue(true);
 		} catch (Exception e) {
-			Assert.fail("Deveria ter lançado excessão FilmeSemEstoqueException!!!");
+			fail("Deveria ter lançado excessão FilmeSemEstoqueException!!!");
 		}
 	}
 	
@@ -222,7 +224,7 @@ public class LocacaoServiceTest {
 			service.alugarFilme(null, filmes);
 			Assert.fail();
 		} catch (LocadoraException e) {
-			Assert.assertThat(e.getMessage(), CoreMatchers.is("Usuario vazio"));
+			assertThat(e.getMessage(), CoreMatchers.is("Usuario vazio"));
 		} 
 	}
 	
@@ -243,7 +245,7 @@ public class LocacaoServiceTest {
 		//Assert.assertTrue(ehSegunda);
 		
 		// criando proprios matchers
-		Assert.assertThat(retorno.getDataRetorno(), MatchersProprios.caiEm(Calendar.MONDAY));
+		assertThat(retorno.getDataRetorno(), MatchersProprios.caiEm(Calendar.MONDAY));
 	
 	}
 	
@@ -252,25 +254,25 @@ public class LocacaoServiceTest {
 	}
 	
 	@Test
-	public void naoDeveAlugarFilmeParaNegativadoSpc() throws FilmeSemEstoqueException {
+	public void naoDeveAlugarFilmeParaNegativadoSpc() throws Exception {
 		// cenario
 		Usuario usuario = UsuarioBuilder.umUsuario().agora();
 		List<Filme> filmes = Arrays.asList(FilmeBuilder.umFilme().agora());
 		
 		// mock no cenario para simular que o usuario eh negativado
-		Mockito.when(spcService.possuiNegativacao(Mockito.any(Usuario.class))).thenReturn(true);
+		when(spcService.possuiNegativacao(any(Usuario.class))).thenReturn(true);
 		
 		// acao
 		try {
 			service.alugarFilme(usuario, filmes);
 			// validacao (não pode chegar aqui pois deve lançar exception)
-			Assert.fail();
+			fail();
 		} catch (LocadoraException e) {
-			Assert.assertThat(e.getMessage(), CoreMatchers.is("Usuario negativado!"));	
+			assertThat(e.getMessage(), CoreMatchers.is("Usuario negativado!"));	
 		} 
 		
 		// vai verificar se o metodo possuiNegativacao foi chamado
-		Mockito.verify(spcService).possuiNegativacao(usuario);
+		verify(spcService).possuiNegativacao(usuario);
 	}
 	
 	@Test
@@ -285,17 +287,39 @@ public class LocacaoServiceTest {
 				LocacaoBuilder.umLocacao().comUsuario(usuario2).agora(),
 				LocacaoBuilder.umLocacao().atrasado().comUsuario(usuario3).agora());
 		// gravando a expectativa
-		Mockito.when(locacaoDao.obterLocacoesPendentes()).thenReturn(locacoes);
+		when(locacaoDao.obterLocacoesPendentes()).thenReturn(locacoes);
 		
 		// acao
 		service.notificarAtrasos();
 		
 		// validacao
 		// verificacao passa o mock criado e o metodo utilizado nele para saber se o mesmo foi chamado
-		Mockito.verify(emailService).notificarAtrasos(usuario);
+		verify(emailService).notificarAtrasos(usuario);
 		// pro usuario 2 nunca deve ocorrer pois não está atrasado
-		Mockito.verify(emailService, Mockito.never()).notificarAtrasos(usuario2);
-		Mockito.verify(emailService).notificarAtrasos(usuario3);
+		verify(emailService, Mockito.never()).notificarAtrasos(usuario2);
+		verify(emailService).notificarAtrasos(usuario3);
+	}
+	
+	/**
+	 * Tratamento de erro/exception com mockito
+	 * @throws Exception 
+	 */
+	@Test
+	public void deveTratarErroNoSpc() throws Exception {
+		// cenário
+		Usuario usuario = UsuarioBuilder.umUsuario().agora();
+		List<Filme> filmes = Arrays.asList(FilmeBuilder.umFilme().agora());
+		
+		// fazendo o mock lançae exceção...
+		when(spcService.possuiNegativacao(usuario)).thenThrow(new Exception("Problemas com Spc, tente novamente!"));
+		
+		exception.expect(LocadoraException.class);
+		exception.expectMessage("Problemas com Spc, tente novamente!");
+		
+		// acao
+		service.alugarFilme(usuario, filmes);
+		
+		// verificacao
 	}
 	
 }
