@@ -19,4 +19,7 @@ public class Calculadora {
 		return x / y;
 	}
 
+	public void imprime() {
+		System.out.println("Teste impressão calculadora");
+	}
 }
