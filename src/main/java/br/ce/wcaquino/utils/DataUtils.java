@@ -18,9 +18,7 @@ public class DataUtils {
 	 * @param dias
 	 * @return
 	 */
-	public static Date adicionarDias(Date data, int dias) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(data);
+	public static Date adicionarDias(Calendar calendar, int dias) {
 		calendar.add(DAY_OF_MONTH, dias);
 		return calendar.getTime();
 	}
@@ -33,7 +31,7 @@ public class DataUtils {
 	 * @return Data atualizada
 	 */
 	public static Date obterDataComDiferencaDias(int dias) {
-		return adicionarDias(new Date(), dias);
+		return adicionarDias(Calendar.getInstance(), dias);
 	}
 	
 	/**
