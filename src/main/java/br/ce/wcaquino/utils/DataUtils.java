@@ -7,6 +7,7 @@ import static java.util.Calendar.YEAR;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class DataUtils {
 	
@@ -18,7 +19,9 @@ public class DataUtils {
 	 * @param dias
 	 * @return
 	 */
-	public static Date adicionarDias(Calendar calendar, int dias) {
+	public static Date adicionarDias(Date data, int dias) {
+		Calendar calendar = new GregorianCalendar();
+		calendar.setTime(data);
 		calendar.add(DAY_OF_MONTH, dias);
 		return calendar.getTime();
 	}
@@ -31,7 +34,7 @@ public class DataUtils {
 	 * @return Data atualizada
 	 */
 	public static Date obterDataComDiferencaDias(int dias) {
-		return adicionarDias(Calendar.getInstance(), dias);
+		return adicionarDias(new Date(), dias);
 	}
 	
 	/**
