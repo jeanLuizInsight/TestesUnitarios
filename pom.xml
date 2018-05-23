@@ -4,6 +4,27 @@
   <artifactId>TestesUnitarios</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   
+  <build>
+    <pluginManagement>
+      	<plugins>
+        	<plugin>
+	          	<groupId>org.apache.maven.plugins</groupId>
+	          	<artifactId>maven-surefire-plugin</artifactId>
+	          	<version>2.21.0</version>
+	          	<configuration>
+	          		<!-- Gambi: include para Testes PowerMock, pois sem mapear não executa devido hierarquia não vir de PowerRunner -->
+		          	<includes>
+		          		<include>br/ce/wcaquino/**/*.java</include>
+		          	</includes>
+					<useUnlimitedThreads>true</useUnlimitedThreads>
+					<!-- <threadCount>2</threadCount> -->
+					<parallel>all</parallel>
+				</configuration>
+        	</plugin>
+      	</plugins>
+    </pluginManagement>
+  </build>
+  
   <dependencies>
   	<dependency>
   		<groupId>junit</groupId>

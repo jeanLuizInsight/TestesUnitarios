@@ -49,7 +49,9 @@ import builders.UsuarioBuilder;
 import daos.LocacaoDAO;
 import exceptions.FilmeSemEstoqueException;
 import exceptions.LocadoraException;
+import runners.ParallelRunners;
 
+//@RunWith(ParallelRunners.class)
 public class LocacaoServiceTest {
 	
 	/**

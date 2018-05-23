@@ -20,7 +20,6 @@ public class DiaSemanaMatcher extends TypeSafeMatcher<Date> {
 	/**
 	 * Descrição do valor esperado para quando ocorrer erro no teste
 	 */
-	@Override
 	public void describeTo(Description description) {
 		Calendar data = Calendar.getInstance();
 		data.set(Calendar.DAY_OF_WEEK, diaSemana);
