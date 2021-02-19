@@ -1,4 +1,4 @@
-package br.ce.wcaquino.servicos;
+package com.zanatta.servicos;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
@@ -34,12 +34,14 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
-
-import br.ce.wcaquino.entidades.Filme;
-import br.ce.wcaquino.entidades.Locacao;
-import br.ce.wcaquino.entidades.Usuario;
-import br.ce.wcaquino.matchers.MatchersProprios;
-import br.ce.wcaquino.utils.DataUtils;
+import com.zanatta.entidades.Filme;
+import com.zanatta.entidades.Locacao;
+import com.zanatta.entidades.Usuario;
+import com.zanatta.matchers.MatchersProprios;
+import com.zanatta.servicos.EmailService;
+import com.zanatta.servicos.LocacaoService;
+import com.zanatta.servicos.SpcService;
+import com.zanatta.utils.DataUtils;
 import buildermaster.BuilderMaster;
 import builders.FilmeBuilder;
 import builders.LocacaoBuilder;

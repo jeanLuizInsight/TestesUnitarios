@@ -1,17 +1,15 @@
-package br.ce.wcaquino.servicos;
+package com.zanatta.servicos;
 
-import static br.ce.wcaquino.utils.DataUtils.adicionarDias;
-
+import static com.zanatta.utils.DataUtils.adicionarDias;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
-
-import br.ce.wcaquino.entidades.Filme;
-import br.ce.wcaquino.entidades.Locacao;
-import br.ce.wcaquino.entidades.Usuario;
-import br.ce.wcaquino.utils.DataUtils;
+import com.zanatta.entidades.Filme;
+import com.zanatta.entidades.Locacao;
+import com.zanatta.entidades.Usuario;
+import com.zanatta.utils.DataUtils;
 import daos.LocacaoDAO;
 import exceptions.FilmeSemEstoqueException;
 import exceptions.LocadoraException;

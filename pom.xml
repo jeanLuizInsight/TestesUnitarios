@@ -14,7 +14,7 @@
 	          	<configuration>
 	          		<!-- Gambi: include para Testes PowerMock, pois sem mapear não executa devido hierarquia não vir de PowerRunner -->
 		          	<includes>
-		          		<include>br/ce/wcaquino/**/*.java</include>
+		          		<include>com/zanatta/**/*.java</include>
 		          	</includes>
 					<useUnlimitedThreads>true</useUnlimitedThreads>
 					<!-- <threadCount>2</threadCount> -->

@@ -1,4 +1,4 @@
-package br.ce.wcaquino.matchers;
+package com.zanatta.matchers;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -6,8 +6,7 @@ import java.util.Locale;
 
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
-
-import br.ce.wcaquino.utils.DataUtils;
+import com.zanatta.utils.DataUtils;
 
 public class DiaSemanaMatcher extends TypeSafeMatcher<Date> {
 

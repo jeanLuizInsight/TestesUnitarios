@@ -1,6 +1,6 @@
 package builders;
 
-import br.ce.wcaquino.entidades.Usuario;
+import com.zanatta.entidades.Usuario;
 
 public class UsuarioBuilder {
 

@@ -5,10 +5,9 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-
-import br.ce.wcaquino.servicos.CalculadoraTest;
-import br.ce.wcaquino.servicos.CalculoValorLocacaoTest;
-import br.ce.wcaquino.servicos.LocacaoServiceTest;
+import com.zanatta.servicos.CalculadoraTest;
+import com.zanatta.servicos.CalculoValorLocacaoTest;
+import com.zanatta.servicos.LocacaoServiceTest;
 
 /**
  * Exemplo utilizando uma Suite para executar todos os testes

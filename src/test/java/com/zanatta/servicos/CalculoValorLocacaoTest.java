@@ -1,4 +1,4 @@
-package br.ce.wcaquino.servicos;
+package com.zanatta.servicos;
 
 import static org.hamcrest.CoreMatchers.is;
 
@@ -16,10 +16,11 @@ import org.junit.runners.Parameterized.Parameters;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import br.ce.wcaquino.entidades.Filme;
-import br.ce.wcaquino.entidades.Locacao;
-import br.ce.wcaquino.entidades.Usuario;
+import com.zanatta.entidades.Filme;
+import com.zanatta.entidades.Locacao;
+import com.zanatta.entidades.Usuario;
+import com.zanatta.servicos.LocacaoService;
+import com.zanatta.servicos.SpcService;
 import builders.FilmeBuilder;
 import builders.UsuarioBuilder;
 import daos.LocacaoDAO;

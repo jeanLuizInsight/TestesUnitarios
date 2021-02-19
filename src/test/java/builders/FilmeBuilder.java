@@ -1,6 +1,6 @@
 package builders;
 
-import br.ce.wcaquino.entidades.Filme;
+import com.zanatta.entidades.Filme;
 
 public class FilmeBuilder {
 

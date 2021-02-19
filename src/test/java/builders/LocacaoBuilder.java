@@ -2,11 +2,10 @@ package builders;
 
 import java.util.Arrays;
 import java.util.Date;
-
-import br.ce.wcaquino.entidades.Filme;
-import br.ce.wcaquino.entidades.Locacao;
-import br.ce.wcaquino.entidades.Usuario;
-import br.ce.wcaquino.utils.DataUtils;
+import com.zanatta.entidades.Filme;
+import com.zanatta.entidades.Locacao;
+import com.zanatta.entidades.Usuario;
+import com.zanatta.utils.DataUtils;
 
 public class LocacaoBuilder {
 	private Locacao elemento;

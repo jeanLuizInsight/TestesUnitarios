@@ -1,4 +1,4 @@
-package br.ce.wcaquino.servicos;
+package com.zanatta.servicos;
 
 import exceptions.NaoPodeDividirPorZeroException;
 

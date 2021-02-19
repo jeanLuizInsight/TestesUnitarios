@@ -1,9 +1,9 @@
-package br.ce.wcaquino.servicos;
+package com.zanatta.servicos;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+import com.zanatta.servicos.Calculadora;
 import exceptions.NaoPodeDividirPorZeroException;
 import runners.ParallelRunners;
 

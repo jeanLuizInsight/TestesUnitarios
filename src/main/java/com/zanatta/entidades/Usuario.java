@@ -1,4 +1,4 @@
-package br.ce.wcaquino.entidades;
+package com.zanatta.entidades;
 
 public class Usuario {
 

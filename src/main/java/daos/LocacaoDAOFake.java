@@ -1,8 +1,7 @@
 package daos;
 
 import java.util.List;
-
-import br.ce.wcaquino.entidades.Locacao;
+import com.zanatta.entidades.Locacao;
 
 public class LocacaoDAOFake implements LocacaoDAO {
 

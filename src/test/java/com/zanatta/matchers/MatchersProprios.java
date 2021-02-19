@@ -1,4 +1,4 @@
-package br.ce.wcaquino.matchers;
+package com.zanatta.matchers;
 
 public class MatchersProprios {
 	

@@ -1,6 +1,6 @@
-package br.ce.wcaquino.servicos;
+package com.zanatta.servicos;
 
-import br.ce.wcaquino.entidades.Usuario;
+import com.zanatta.entidades.Usuario;
 
 public interface EmailService {
 

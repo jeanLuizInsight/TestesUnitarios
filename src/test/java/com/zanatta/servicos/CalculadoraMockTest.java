@@ -1,4 +1,4 @@
-package br.ce.wcaquino.servicos;
+package com.zanatta.servicos;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import com.zanatta.servicos.Calculadora;
 
 public class CalculadoraMockTest {
 	
